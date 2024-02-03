@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using ShelterHelperAPI.Models;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -21,6 +22,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using (var scope = app.Services.CreateScope())
+{
+	var services = scope.ServiceProvider;
+
+	var context = services.GetRequiredService<ShelterContext>();	
+}
+
+
 
 app.UseHttpsRedirection();
 
