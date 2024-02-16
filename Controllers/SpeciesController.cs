@@ -11,114 +11,158 @@ using ShelterHelperAPI.Models;
 
 namespace ShelterHelperAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SpeciesController : ControllerBase
-    {
-        private readonly ShelterContext _context;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class SpeciesController : ControllerBase
+	{
+		private readonly ShelterContext _context;
 
-        public SpeciesController(ShelterContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/Species
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Species>>> GetSpeciesDb()
-        {
-            
-           return await _context.Species.ToListAsync();			          
+		public SpeciesController(ShelterContext context)
+		{
+			_context = context;
 		}
 
-        // GET: api/Species/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Species>> GetSpecies(string id)
-        {
-            var species = await _context.Species.FindAsync(id);
+		// GET: api/Species
+		[HttpGet]
+		public async Task<ActionResult<IEnumerable<Species>>> GetSpeciesDb()
+		{
+			return await _context.Species.ToListAsync();
+		}
 
-            if (species == null)
-            {
-                return NotFound();
-            }
+		//GET: api/GetAttributes/Diet
+		[HttpGet]
+		[Route("/GetAttributes/{table}")]
+		
+		public async Task<ActionResult<Dictionary<int,string>>> GetAttributes(string table)
+		{
+			 var names = new Dictionary<int, string>();
+			
+			switch (table)
+			{
+				case "diet":
+					await 					
+					foreach (var item in _context.Diet)
+					{
+						names.Add(item.DietId, item.DietName);
+					};
+					break;
+				case "bedding":
+					await foreach (var item in _context.Bedding)
+					{
+						names.Add(item.BeddingId, item.BeddingName);
+					}
+					break;
+				case "toy":
+					await foreach (var item in _context.Toy)
+					{
+						names.Add(item.ToyId, item.ToyName);
+					};
+					break;
+				case "accessory":
+					await foreach (var item in _context.Accessory)
+					{
+						names.Add(item.AccessoryId, item.AccessoryName);
+					};
+					break;
+				default:
+					NotFound();
+					break;
+			}
+			
+			return names;
+		 
+		}
+	
 
-            return species;
-        }
+		// GET: api/Species/5
+		[HttpGet("{id}")]
+		public async Task<ActionResult<Species>> GetSpecies(string id)
+		{
+			var species = await _context.Species.FindAsync(id);
 
-        // PUT: api/Species/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSpecies(int id, Species species)
-        {
-            if (id != species.SpeciesId)
-            {
-                return BadRequest();
-            }
+			if (species == null)
+			{
+				return NotFound();
+			}
 
-            _context.Entry(species).State = EntityState.Modified;
+			return species;
+		}
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SpeciesExists(id.ToString()))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+		// PUT: api/Species/5
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPut("{id}")]
+		public async Task<IActionResult> PutSpecies(int id, Species species)
+		{
+			if (id != species.SpeciesId)
+			{
+				return BadRequest();
+			}
 
-            return NoContent();
-        }
+			_context.Entry(species).State = EntityState.Modified;
 
-        // POST: api/Species
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Species>> PostSpecies(Species species)
-        {
-            _context.Species.Add(species);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SpeciesExists(species.SpeciesId.ToString()))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!SpeciesExists(id.ToString()))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 
-            return CreatedAtAction("GetSpecies", new { id = species.SpeciesId }, species);
-        }
+			return NoContent();
+		}
 
-        // DELETE: api/Species/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSpecies(int id)
-        {
-            var species = await _context.Species.FindAsync(id);
-            if (species == null)
-            {
-                return NotFound();
-            }
+		// POST: api/Species
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPost]
+		public async Task<ActionResult<Species>> PostSpecies(Species species)
+		{
+			_context.Species.Add(species);
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException)
+			{
+				if (SpeciesExists(species.SpeciesId.ToString()))
+				{
+					return Conflict();
+				}
+				else
+				{
+					throw;
+				}
+			}
 
-            _context.Species.Remove(species);
-            await _context.SaveChangesAsync();
+			return CreatedAtAction("GetSpecies", new { id = species.SpeciesId }, species);
+		}
 
-            return NoContent();
-        }
+		// DELETE: api/Species/5
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteSpecies(int id)
+		{
+			var species = await _context.Species.FindAsync(id);
+			if (species == null)
+			{
+				return NotFound();
+			}
 
-        private bool SpeciesExists(string id)
-        {
-            return _context.Species.Any(e => e.SpeciesId.ToString() == id);
-        }
-    }
+			_context.Species.Remove(species);
+			await _context.SaveChangesAsync();
+
+			return NoContent();
+		}
+
+		private bool SpeciesExists(string id)
+		{
+			return _context.Species.Any(e => e.SpeciesId.ToString() == id);
+		}
+	}
 }
