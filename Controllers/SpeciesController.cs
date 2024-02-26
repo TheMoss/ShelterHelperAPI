@@ -29,54 +29,25 @@ namespace ShelterHelperAPI.Controllers
 			return await _context.Species.ToListAsync();
 		}
 
-		//GET: api/GetAttributes/Diet
+		//GET: api/GetStorage
 		[HttpGet]
-		[Route("/GetAttributes/{table}")]
-		
-		public async Task<ActionResult<Dictionary<int,string>>> GetAttributes(string table)
+		[Route("/GetStorage")]
+
+		public async Task<ActionResult<StorageDto>> GetStorage()
 		{
-			 var names = new Dictionary<int, string>();
-			
-			switch (table)
-			{
-				case "diet":
-					await 					
-					foreach (var item in _context.Diet)
-					{
-						names.Add(item.DietId, item.DietName);
-					};
-					break;
-				case "bedding":
-					await foreach (var item in _context.Bedding)
-					{
-						names.Add(item.BeddingId, item.BeddingName);
-					}
-					break;
-				case "toy":
-					await foreach (var item in _context.Toy)
-					{
-						names.Add(item.ToyId, item.ToyName);
-					};
-					break;
-				case "accessory":
-					await foreach (var item in _context.Accessory)
-					{
-						names.Add(item.AccessoryId, item.AccessoryName);
-					};
-					break;
-				default:
-					NotFound();
-					break;
-			}
-			
-			return names;
-		 
-		}
-	
+			var attributesDto = new StorageDto();
+
+			attributesDto.DietsList = await _context.Diet.ToListAsync();
+			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
+			attributesDto.ToysList = await _context.Toy.ToListAsync();
+			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
+
+			return attributesDto;
+		}		
 
 		// GET: api/Species/5
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Species>> GetSpecies(string id)
+		public async Task<ActionResult<Species>> GetSpecies(int id)
 		{
 			var species = await _context.Species.FindAsync(id);
 
