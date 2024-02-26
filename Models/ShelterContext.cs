@@ -33,13 +33,32 @@ namespace ShelterHelperAPI.Models
 				DietName = "dog food",
 				Quantity_kg = 157,						
 				
-			});		
+			},
+			new Diet
+			{
+				DietId = 2,
+				DietName = "hay",
+				Quantity_kg = 452,
+			}
+			);		
 
 			modelBuilder.Entity<Accessory>().HasData(new Accessory
 			{
 				AccessoryId = 1,
 				AccessoryName = "collar",
 				Quantity = 14,
+			},
+			new Accessory
+			{
+				AccessoryId = 2,
+				AccessoryName = "halter",
+				Quantity = 7,
+			},
+			new Accessory
+			{
+				AccessoryId = 3,
+				AccessoryName = "brush",
+				Quantity = 15,
 			});
 
 			modelBuilder.Entity<Bedding>().HasData(new Bedding
@@ -47,13 +66,32 @@ namespace ShelterHelperAPI.Models
 				BeddingId = 1,
 				BeddingName = "blanket",
 				Quantity_kg = 9
-			});
+			},
+			new Bedding
+			{
+				BeddingId = 2,
+				BeddingName = "straw",
+				Quantity_kg = 143,
+			}
+			);
 
 			modelBuilder.Entity<Toy>().HasData(new Toy
 			{
 				ToyId = 1,
 				ToyName = "ball",
 				Quantity = 20
+			},
+			new Toy
+			{
+				ToyId = 2,
+				ToyName = "salt block",
+				Quantity = 5,
+			},
+			new Toy
+			{
+				ToyId = 3,
+				ToyName = "big ball",
+				Quantity = 3,
 			});
 			modelBuilder.Entity<Species>().HasData(new Species
 			{
@@ -63,6 +101,24 @@ namespace ShelterHelperAPI.Models
 				BeddingId = 1,
 				ToyId = 1,
 				DietId = 1,
+			},
+			new Species
+			{
+				SpeciesId = 2,
+				SpeciesName = "cow",
+				AccessoryId = 2,
+				BeddingId = 2,
+				ToyId = 2,
+				DietId = 2,
+			},
+			new Species
+			{
+				SpeciesId = 3,
+				SpeciesName = "horse",
+				AccessoryId = 3,
+				BeddingId = 2,
+				ToyId = 3,
+				DietId = 2,
 			});
 
 		}
