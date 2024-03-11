@@ -100,16 +100,9 @@ namespace ShelterHelperAPI.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateException)
+			catch (DbUpdateException ex)
 			{
-				if (SpeciesExists(species.SpeciesId.ToString()))
-				{
-					return Conflict();
-				}
-				else
-				{
-					throw;
-				}
+				throw new DbUpdateException("Adding a new record to the database failed", ex);
 			}
 
 			return CreatedAtAction("GetSpecies", new { id = species.SpeciesId }, species);
