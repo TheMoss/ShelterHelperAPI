@@ -32,7 +32,7 @@ namespace ShelterHelperAPI.Models
 	public class Diet
 	{
 		[Key]
-		public int DietId { get; set; }        
+		public int? DietId { get; set; }        
         public string DietName { get; set; }
         public int Quantity_kg { get; set; }
 	}
@@ -40,7 +40,7 @@ namespace ShelterHelperAPI.Models
 	public class Bedding
 	{
 		[Key]
-		public int BeddingId { get; set; }
+		public int? BeddingId { get; set; }
         public string BeddingName { get; set; }
         public int Quantity_kg { get; set; }
 	}
@@ -48,7 +48,7 @@ namespace ShelterHelperAPI.Models
 	public class Toy
 	{
 		[Key]
-		public int ToyId { get; set; }
+		public int? ToyId { get; set; }
         public string ToyName { get; set; }
         public int Quantity { get; set; }
 	}
@@ -56,7 +56,7 @@ namespace ShelterHelperAPI.Models
 	public class Accessory
 	{
 		[Key]
-		public int AccessoryId { get; set; }
+		public int? AccessoryId { get; set; }
         public string AccessoryName { get; set; }
         public int Quantity { get; set; }		
 	}
