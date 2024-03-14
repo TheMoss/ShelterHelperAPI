@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShelterHelperAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,11 +18,18 @@ namespace ShelterHelperAPI.Controllers
 			_context = context;
 		}
 
-		// GET: api/<StorageController>
+		//GET: api/Storage/Get
 		[HttpGet]
-		public IEnumerable<string> Get()
+		public async Task<ActionResult<StorageDto>> Get()
 		{
-			return new string[] { "value1", "value2" };
+			var attributesDto = new StorageDto();
+
+			attributesDto.DietsList = await _context.Diet.ToListAsync();
+			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
+			attributesDto.ToysList = await _context.Toy.ToListAsync();
+			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
+
+			return attributesDto;
 		}
 
 		// GET api/<StorageController>/5

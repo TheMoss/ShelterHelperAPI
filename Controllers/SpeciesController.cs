@@ -28,23 +28,7 @@ namespace ShelterHelperAPI.Controllers
 		{
 			return await _context.Species.ToListAsync();
 		}
-
-		//GET: api/GetStorage
-		[HttpGet]
-		[Route("/GetStorage")]
-
-		public async Task<ActionResult<StorageDto>> GetStorage()
-		{
-			var attributesDto = new StorageDto();
-
-			attributesDto.DietsList = await _context.Diet.ToListAsync();
-			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
-			attributesDto.ToysList = await _context.Toy.ToListAsync();
-			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
-
-			return attributesDto;
-		}		
-
+		
 		// GET: api/Species/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Species>> GetSpecies(int id)
