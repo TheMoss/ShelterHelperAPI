@@ -1,10 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using ShelterHelperAPI.Models;
 
 namespace ShelterHelperAPI.Controllers
 {
-	[Route("api/species")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class SpeciesController : ControllerBase
 	{
@@ -15,14 +22,14 @@ namespace ShelterHelperAPI.Controllers
 			_context = context;
 		}
 
-		// GET: api/species
+		// GET: api/Species
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<Species>>> GetSpeciesDb()
 		{
 			return await _context.Species.ToListAsync();
 		}
 		
-		// GET: api/species/5
+		// GET: api/Species/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Species>> GetSpecies(int id)
 		{
@@ -36,7 +43,7 @@ namespace ShelterHelperAPI.Controllers
 			return species;
 		}
 
-		// PUT: api/species/5
+		// PUT: api/Species/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutSpecies(int id, Species species)
@@ -54,7 +61,7 @@ namespace ShelterHelperAPI.Controllers
 			}
 			catch (DbUpdateConcurrencyException)
 			{
-				if (!SpeciesExists(id))
+				if (!SpeciesExists(id.ToString()))
 				{
 					return NotFound();
 				}
@@ -67,18 +74,25 @@ namespace ShelterHelperAPI.Controllers
 			return NoContent();
 		}
 
-		// POST: api/species
+		// POST: api/Species
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
 		public async Task<ActionResult<Species>> PostSpecies(Species species)
 		{
-			_context.Species.Add(species);			
-			await _context.SaveChangesAsync();
-			
+			_context.Species.Add(species);
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException ex)
+			{
+				throw new DbUpdateException("Adding a new record to the database failed", ex);
+			}
+
 			return CreatedAtAction("GetSpecies", new { id = species.SpeciesId }, species);
 		}
 
-		// DELETE: api/species/5
+		// DELETE: api/Species/5
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteSpecies(int id)
 		{
@@ -94,9 +108,9 @@ namespace ShelterHelperAPI.Controllers
 			return NoContent();
 		}
 
-		private bool SpeciesExists(int id)
+		private bool SpeciesExists(string id)
 		{
-			return _context.Species.Any(e => e.SpeciesId == id);
+			return _context.Species.Any(e => e.SpeciesId.ToString() == id);
 		}
 	}
 }
