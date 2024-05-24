@@ -4,7 +4,7 @@ using ShelterHelperAPI.Models;
 
 namespace ShelterHelperAPI.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/animals")]
 	[ApiController]
 	public class AnimalsController : ControllerBase
 	{
@@ -16,14 +16,14 @@ namespace ShelterHelperAPI.Controllers
 			_context = context;
 		}
 
-		// GET: api/Animals
+		// GET: api/animals
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<Animal>>> GetAnimalsDb()
 		{
 			return await _context.AnimalsDb.ToListAsync();
 		}
 
-		// GET: api/Animals/5
+		// GET: api/animals/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Animal>> GetAnimal(int id)
 		{
@@ -37,7 +37,7 @@ namespace ShelterHelperAPI.Controllers
 			return animal;
 		}
 
-		// PUT: api/Animals/5
+		// PUT: api/animals/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutAnimal(int id, Animal animal)
@@ -68,7 +68,7 @@ namespace ShelterHelperAPI.Controllers
 			return NoContent();
 		}
 
-		// POST: api/Animals
+		// POST: api/animals
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
 		public async Task<ActionResult<Animal>> PostAnimal(Animal animal)
