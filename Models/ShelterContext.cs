@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShelterHelper.Models;
 using System.Reflection.Metadata;
 
 
@@ -12,6 +13,7 @@ namespace ShelterHelperAPI.Models
 		public DbSet<Bedding> Bedding { get; set; }
 		public DbSet<Toy> Toy { get; set; }
 		public DbSet<Accessory> Accessory { get; set; }
+		public DbSet<Employee> Employee { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -120,6 +122,34 @@ namespace ShelterHelperAPI.Models
 				ToyId = 3,
 				DietId = 2,
 			});
+
+			modelBuilder.Entity<Employee>().HasData(
+				new Employee
+				{
+					EmployeeId = 1,
+					EmployeeName = "Steve Wazowski",
+					EmployeePersonalId = 840792,
+				},
+				new Employee{
+				EmployeeId = 2,
+					EmployeeName = "Lee Smith",
+					EmployeePersonalId = 625614,
+				},
+			new Employee{
+				EmployeeId = 3,
+					EmployeeName = "Jill Jackson",
+					EmployeePersonalId = 739618,
+				},
+			new Employee{
+				EmployeeId = 4,
+					EmployeeName = "Sophie Brown",
+					EmployeePersonalId = 857104,
+				},
+			new Employee {
+				EmployeeId = 5,
+					EmployeeName = "Arnold Mason",
+					EmployeePersonalId = 629513,
+				});
 
 		}
 		public ShelterContext(DbContextOptions<ShelterContext> options) : base(options) {
