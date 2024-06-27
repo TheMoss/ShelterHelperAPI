@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShelterHelperAPI.Models;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,7 +30,7 @@ namespace ShelterHelperAPI.Controllers
 			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
 			attributesDto.ToysList = await _context.Toy.ToListAsync();
 			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
-
+			
 			return attributesDto;
 		}
 
@@ -36,24 +38,41 @@ namespace ShelterHelperAPI.Controllers
 
 		//GET api/resources/diets/1
 		[HttpGet("diets/{id}")]
+		[EnableCors("AllowSpecificOrigin")]
 		public async Task<ActionResult<Diet>> GetDiet(int id)
 		{
 			var diet = await _context.Diet.FindAsync(id);
 			if (diet == null)
 			{
 				return NotFound();
-			}
+			}			
 			return diet;
 		}
 
-		// POST api/resources/diet
+		// POST api/resources/diets
 		[HttpPost]
 		[Route("diets")]
+
 		public async Task<ActionResult<Diet>> PostNewDiet(Diet diet)
 		{
+
 			_context.Diet.Add(diet);
 			await _context.SaveChangesAsync();
 			return CreatedAtAction(nameof(Get), new {id = diet.DietId}, diet);
+		}
+
+		//PATCH api/resources/diets/1
+		[HttpPatch]
+		[Route("diets/{id}")]
+		[EnableCors("AllowSpecificOrigin")]
+		public async Task<ActionResult> PatchDiet(int id, JsonPatchDocument<Diet> patch)
+		{		
+			Diet diet =  await _context.Diet.FindAsync(id);			
+			patch.ApplyTo(diet);
+			_context.Diet.Update(diet);
+			await _context.SaveChangesAsync();
+			return Ok(diet);
+			
 		}
 		#endregion
 
