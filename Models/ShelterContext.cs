@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShelterHelper.Models;
-using System.Reflection.Metadata;
 
 
 namespace ShelterHelperAPI.Models
 {
-    public class ShelterContext : DbContext
+	public class ShelterContext : DbContext
     {
 		public DbSet<Animal> AnimalsDb { get; set; }
 		public DbSet<Species> Species { get; set; }
@@ -14,6 +12,7 @@ namespace ShelterHelperAPI.Models
 		public DbSet<Toy> Toy { get; set; }
 		public DbSet<Accessory> Accessory { get; set; }
 		public DbSet<Employee> Employee { get; set; }
+		public DbSet<Owner> Owner { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -151,7 +150,22 @@ namespace ShelterHelperAPI.Models
 					EmployeePersonalId = 629513,
 				});
 
+			modelBuilder.Entity<Owner>().HasData(
+				new Owner
+				{
+					OwnerId = 1,
+					OwnerName = "Amanda Lawson",
+					Address = "Park Road 7, Sydney"
+				},
+				new Owner
+				{
+					OwnerId = 2,
+					OwnerName = "Guy Brickman",
+					Address = "Sausage Plaza 17, Pinewood"
+				});
 		}
+
+		public ShelterContext() { }
 		public ShelterContext(DbContextOptions<ShelterContext> options) : base(options) {
 			
 		}
