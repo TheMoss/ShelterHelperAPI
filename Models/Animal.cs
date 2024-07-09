@@ -1,4 +1,4 @@
-﻿using ShelterHelper.Models;
+﻿
 using System.ComponentModel.DataAnnotations;
 
 namespace ShelterHelperAPI.Models
@@ -17,5 +17,8 @@ namespace ShelterHelperAPI.Models
 		public string Health { get; set; }
 		public virtual Employee? Employee { get; set; }	
 		public int EmployeeId { get; set; }
+
+		public virtual Owner? Owner { get; set; }
+		public int? OwnerId { get; set; }
 	}
 }
