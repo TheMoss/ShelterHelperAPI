@@ -73,7 +73,7 @@ namespace ShelterHelperAPI.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Animal>> PostAnimal(Animal animal)
 		{
-			_context.AnimalsDb.Add(animal);
+			_context.AnimalsDb.Update(animal);
 			await _context.SaveChangesAsync();
 
 			return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
