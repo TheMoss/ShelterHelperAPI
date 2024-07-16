@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ShelterHelperAPI.Models;
-
 namespace ShelterHelperAPI.Controllers
 {
 	[Route("api/animals")]
@@ -70,13 +71,34 @@ namespace ShelterHelperAPI.Controllers
 
 		// POST: api/animals
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost]
+		[HttpPost, ValidateAntiForgeryToken]
 		public async Task<ActionResult<Animal>> PostAnimal(Animal animal)
 		{
 			_context.AnimalsDb.Update(animal);
 			await _context.SaveChangesAsync();
 
 			return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
+		}
+
+
+		//PATCH api/animals/5
+		[HttpPatch("{id}")]
+		public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<Animal> patchAnimal)
+		{
+			if (patchAnimal != null)
+			{
+                var animal = await _context.AnimalsDb.FindAsync(id);
+                patchAnimal.ApplyTo(animal);
+                _context.Update(animal);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+			else
+			{
+				return BadRequest();
+			}
+			
 		}
 
 		// DELETE: api/Animals/5
