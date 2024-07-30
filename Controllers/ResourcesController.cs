@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace ShelterHelperAPI.Controllers
 {
-	
+
 	[Route("api/resources")]
 	[ApiController]
 	public class ResourcesController : ControllerBase
@@ -30,7 +30,7 @@ namespace ShelterHelperAPI.Controllers
 			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
 			attributesDto.ToysList = await _context.Toy.ToListAsync();
 			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
-			
+
 			return attributesDto;
 		}
 
@@ -45,7 +45,7 @@ namespace ShelterHelperAPI.Controllers
 			if (diet == null)
 			{
 				return NotFound();
-			}			
+			}
 			return diet;
 		}
 
@@ -58,7 +58,7 @@ namespace ShelterHelperAPI.Controllers
 
 			_context.Diet.Add(diet);
 			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new {id = diet.DietId}, diet);
+			return CreatedAtAction(nameof(Get), new { id = diet.DietId }, diet);
 		}
 
 		//PATCH api/resources/diets/1
@@ -66,19 +66,45 @@ namespace ShelterHelperAPI.Controllers
 		[Route("diets/{id}")]
 		[EnableCors("AllowSpecificOrigin")]
 		public async Task<ActionResult> PatchDiet(int id, JsonPatchDocument<Diet> patch)
-		{		
-			Diet diet =  await _context.Diet.FindAsync(id);			
+		{
+			Diet diet = await _context.Diet.FindAsync(id);
 			patch.ApplyTo(diet);
 			_context.Diet.Update(diet);
 			await _context.SaveChangesAsync();
 			return Ok(diet);
-			
-		}
-		#endregion
 
-		#region Beddings
-		//GET api/resources/beddings/1
-		[HttpGet("beddings/{id}")]
+		}
+
+		//POST : api/resources/diets/5
+		[HttpPost]
+		[Route("diets/{id}")]
+		public async Task<ActionResult<Accessory>> EditDiet(int id, Diet diet)
+		{
+			if (id != diet.DietId)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Diet.Update(diet);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+
+			}
+			return NoContent();
+		}
+			#endregion
+
+			#region Beddings
+			//GET api/resources/beddings/1
+			[HttpGet("beddings/{id}")]
 		public async Task<ActionResult<Bedding>> GetBedding(int id)
 		{
 			var bedding = await _context.Bedding.FindAsync(id);
@@ -97,11 +123,37 @@ namespace ShelterHelperAPI.Controllers
 			await _context.SaveChangesAsync();
 			return CreatedAtAction(nameof(Get), new { id = bedding.BeddingId }, bedding);
 		}
-		#endregion
 
-		#region Toys
-		//GET api/resources/toys/1
-		[HttpGet("toys/{id}")]
+		//POST : api/resources/beddings/5
+		[HttpPost]
+		[Route("beddings/{id}")]
+		public async Task<ActionResult<Accessory>> EditBedding(int id, Bedding bedding)
+		{
+			if (id != bedding.BeddingId)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Bedding.Update(bedding);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+
+			}
+			return NoContent();
+		}
+			#endregion
+
+			#region Toys
+			//GET api/resources/toys/1
+			[HttpGet("toys/{id}")]
 		public async Task<ActionResult<Toy>> GetToy(int id)
 		{
 			var toy = await _context.Toy.FindAsync(id);
@@ -120,13 +172,39 @@ namespace ShelterHelperAPI.Controllers
 		{
 			_context.Toy.Add(toy);
 			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = toy.ToyId}, toy);
+			return CreatedAtAction(nameof(Get), new { id = toy.ToyId }, toy);
 		}
-		#endregion
 
-		#region Accessories
-		//GET api/resources/accessories/1
-		[HttpGet("accessories/{id}")]
+		//POST : api/resources/toys/5
+		[HttpPost]
+		[Route("toys/{id}")]
+		public async Task<ActionResult<Accessory>> EditToy(int id, Toy toy)
+		{
+			if (id != toy.ToyId)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Toy.Update(toy);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+
+			}
+			return NoContent();
+		}
+			#endregion
+
+			#region Accessories
+			//GET api/resources/accessories/1
+			[HttpGet("accessories/{id}")]
 		public async Task<ActionResult<Accessory>> GetAccessory(int id)
 		{
 			var accessory = await _context.Accessory.FindAsync(id);
@@ -144,8 +222,34 @@ namespace ShelterHelperAPI.Controllers
 		{
 			_context.Accessory.Add(accessory);
 			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = accessory.AccessoryId}, accessory);
+			return CreatedAtAction(nameof(Get), new { id = accessory.AccessoryId }, accessory);
 		}
-		#endregion
-	}
+
+		//POST : api/resources/accessories/5
+		[HttpPost]
+		[Route("accessories/{id}")]
+		public async Task<ActionResult<Accessory>> EditAccessory(int id, Accessory accessory)
+		{
+			if (id != accessory.AccessoryId)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Accessory.Update(accessory);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+
+			}
+			return NoContent();
+			#endregion Accessories
+		}
+		}
 }
