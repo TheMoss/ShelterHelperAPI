@@ -100,11 +100,26 @@ namespace ShelterHelperAPI.Controllers
 			}
 			return NoContent();
 		}
-			#endregion
+		// DELETE: api/resources/diets/5
+		[HttpDelete("diets/{id}")]
+		public async Task<IActionResult> DeleteDiet(int id)
+		{
+			var diet = await _context.Diet.FindAsync(id);
+			if (diet == null)
+			{
+				return NotFound();
+			}
 
-			#region Beddings
-			//GET api/resources/beddings/1
-			[HttpGet("beddings/{id}")]
+			_context.Diet.Remove(diet);
+			await _context.SaveChangesAsync();
+
+			return NoContent();
+		}
+		#endregion
+
+		#region Beddings
+		//GET api/resources/beddings/1
+		[HttpGet("beddings/{id}")]
 		public async Task<ActionResult<Bedding>> GetBedding(int id)
 		{
 			var bedding = await _context.Bedding.FindAsync(id);
@@ -149,11 +164,26 @@ namespace ShelterHelperAPI.Controllers
 			}
 			return NoContent();
 		}
-			#endregion
+		// DELETE: api/resources/beddings/5
+		[HttpDelete("beddings/{id}")]
+		public async Task<IActionResult> DeleteBedding(int id)
+		{
+			var bedding = await _context.Bedding.FindAsync(id);
+			if (bedding == null)
+			{
+				return NotFound();
+			}
 
-			#region Toys
-			//GET api/resources/toys/1
-			[HttpGet("toys/{id}")]
+			_context.Bedding.Remove(bedding);
+			await _context.SaveChangesAsync();
+
+			return NoContent();
+		}
+		#endregion
+
+		#region Toys
+		//GET api/resources/toys/1
+		[HttpGet("toys/{id}")]
 		public async Task<ActionResult<Toy>> GetToy(int id)
 		{
 			var toy = await _context.Toy.FindAsync(id);
@@ -200,11 +230,27 @@ namespace ShelterHelperAPI.Controllers
 			}
 			return NoContent();
 		}
-			#endregion
 
-			#region Accessories
-			//GET api/resources/accessories/1
-			[HttpGet("accessories/{id}")]
+		// DELETE: api/resources/toys/5
+		[HttpDelete("toys/{id}")]
+		public async Task<IActionResult> DeleteToy(int id)
+		{
+			var toy = await _context.Toy.FindAsync(id);
+			if (toy == null)
+			{
+				return NotFound();
+			}
+
+			_context.Toy.Remove(toy);
+			await _context.SaveChangesAsync();
+
+			return NoContent();
+		}
+		#endregion
+
+		#region Accessories
+		//GET api/resources/accessories/1
+		[HttpGet("accessories/{id}")]
 		public async Task<ActionResult<Accessory>> GetAccessory(int id)
 		{
 			var accessory = await _context.Accessory.FindAsync(id);
@@ -249,7 +295,24 @@ namespace ShelterHelperAPI.Controllers
 
 			}
 			return NoContent();
-			#endregion Accessories
+			
 		}
+
+		// DELETE: api/resources/accessories/5
+		[HttpDelete("accessories/{id}")]
+		public async Task<IActionResult> DeleteAccessory(int id)
+		{
+			var accessory = await _context.Accessory.FindAsync(id);
+			if (accessory == null)
+			{
+				return NotFound();
+			}
+
+			_context.Accessory.Remove(accessory);
+			await _context.SaveChangesAsync();
+
+			return NoContent();
 		}
+		#endregion Accessories
+	}
 }
