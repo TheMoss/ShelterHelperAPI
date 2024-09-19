@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using ShelterHelperAPI.Models;
-using System.Collections.Specialized;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +14,7 @@ builder.Services.AddCors(options =>
 		.AllowAnyHeader();
 	});
 });
-builder.Services.AddControllers()
+builder.Services.AddControllers()	
 	.AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Configuration.AddEnvironmentVariables();
