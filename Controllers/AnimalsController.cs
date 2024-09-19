@@ -80,9 +80,33 @@ namespace ShelterHelperAPI.Controllers
 			return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
 		}
 
+		// POST: api/animals/5
+		[HttpPost("{id}")]        
+        public async Task<ActionResult<Animal>> EditAnimal(int id, Animal animal)
+        {
+            if (id != animal.Id)
+            {
+                return NotFound();
+            }
 
-		//PATCH api/animals/5
-		[HttpPatch("{id}")]
+            if (ModelState.IsValid)
+            {
+				try { 
+                _context.AnimalsDb.Update(animal);
+            await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+            }
+            return NoContent();
+        }
+
+
+        //PATCH api/animals/5
+        [HttpPatch("{id}")]
 		public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<Animal> patchAnimal)
 		{
 			if (patchAnimal != null)
@@ -101,7 +125,7 @@ namespace ShelterHelperAPI.Controllers
 			
 		}
 
-		// DELETE: api/Animals/5
+		// DELETE: api/animals/5
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteAnimal(int id)
 		{
