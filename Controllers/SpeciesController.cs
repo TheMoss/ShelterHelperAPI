@@ -21,7 +21,7 @@ namespace ShelterHelperAPI.Controllers
 		{
 			return await _context.Species.ToListAsync();
 		}
-		
+
 		// GET: api/species/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Species>> GetSpecies(int id)
@@ -72,10 +72,36 @@ namespace ShelterHelperAPI.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Species>> PostSpecies(Species species)
 		{
-			_context.Species.Add(species);			
+			_context.Species.Add(species);
 			await _context.SaveChangesAsync();
-			
+
 			return CreatedAtAction("GetSpecies", new { id = species.SpeciesId }, species);
+		}
+
+		//POST : api/species/5
+		[HttpPost("{id}")]
+		public async Task<ActionResult<Species>> PostSelectedSpecies(int id, Species species)
+		{
+
+			if (id != species.SpeciesId)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Species.Update(species);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw;
+				}
+
+			}
+			return NoContent();
 		}
 
 		// DELETE: api/species/5
