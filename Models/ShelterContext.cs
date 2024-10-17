@@ -5,14 +5,15 @@ namespace ShelterHelperAPI.Models
 {
 	public class ShelterContext : DbContext
     {
+	    public DbSet<Accessory> Accessory { get; set; }
 		public DbSet<Animal> AnimalsDb { get; set; }
-		public DbSet<Species> Species { get; set; }
-		public DbSet<Diet> Diet { get; set; }
+		public DbSet<Assignment> Assignment { get; set; }
 		public DbSet<Bedding> Bedding { get; set; }
-		public DbSet<Toy> Toy { get; set; }
-		public DbSet<Accessory> Accessory { get; set; }
+		public DbSet<Diet> Diet { get; set; }
 		public DbSet<Employee> Employee { get; set; }
 		public DbSet<Owner> Owner { get; set; }
+		public DbSet<Species> Species { get; set; }
+		public DbSet<Toy> Toy { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -163,6 +164,22 @@ namespace ShelterHelperAPI.Models
 					OwnerName = "Guy Brickman",
 					Address = "Sausage Plaza 17, Pinewood"
 				});
+
+			modelBuilder.Entity<Assignment>().HasData(
+				new Assignment
+				{
+					AssignmentId = 1,
+					Title = "Clean the floors",
+					Priority = 2,
+					CreatorId = 142095
+				},
+			new Assignment{
+				AssignmentId = 2,
+				Title = "Patch leaky roof",
+				Priority = 3,
+				CreatorId = 153094,
+				IsInProgress = true
+			});
 		}
 
 		public ShelterContext() { }
