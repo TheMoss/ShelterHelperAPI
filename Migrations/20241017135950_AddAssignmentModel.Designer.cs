@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShelterHelperAPI.Models;
@@ -11,9 +12,11 @@ using ShelterHelperAPI.Models;
 namespace ShelterHelperAPI.Migrations
 {
     [DbContext(typeof(ShelterContext))]
-    partial class ShelterContextModelSnapshot : ModelSnapshot
+    [Migration("20241017135950_AddAssignmentModel")]
+    partial class AddAssignmentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,9 +138,6 @@ namespace ShelterHelperAPI.Migrations
                     b.Property<bool?>("IsCompleted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("IsInProgress")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
 
@@ -155,18 +155,8 @@ namespace ShelterHelperAPI.Migrations
                             AssignmentId = 1,
                             CreatorId = 142095,
                             IsCompleted = false,
-                            IsInProgress = false,
                             Priority = 2,
                             Title = "Clean the floors"
-                        },
-                        new
-                        {
-                            AssignmentId = 2,
-                            CreatorId = 153094,
-                            IsCompleted = false,
-                            IsInProgress = true,
-                            Priority = 3,
-                            Title = "Patch leaky roof"
                         });
                 });
 

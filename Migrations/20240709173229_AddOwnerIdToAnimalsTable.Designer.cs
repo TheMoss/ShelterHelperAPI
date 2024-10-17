@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShelterHelperAPI.Models;
@@ -11,13 +12,15 @@ using ShelterHelperAPI.Models;
 namespace ShelterHelperAPI.Migrations
 {
     [DbContext(typeof(ShelterContext))]
-    partial class ShelterContextModelSnapshot : ModelSnapshot
+    [Migration("20240709173229_AddOwnerIdToAnimalsTable")]
+    partial class AddOwnerIdToAnimalsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -86,6 +89,7 @@ namespace ShelterHelperAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Health")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -96,9 +100,10 @@ namespace ShelterHelperAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Sex")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("SpeciesId")
+                    b.Property<int>("SpeciesId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Weight")
@@ -108,66 +113,9 @@ namespace ShelterHelperAPI.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.HasIndex("OwnerId");
-
                     b.HasIndex("SpeciesId");
 
                     b.ToTable("AnimalsDb");
-                });
-
-            modelBuilder.Entity("ShelterHelperAPI.Models.Assignment", b =>
-                {
-                    b.Property<int?>("AssignmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("AssignmentId"));
-
-                    b.Property<DateOnly?>("CreationDate")
-                        .HasColumnType("date");
-
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<bool?>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("IsInProgress")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("AssignmentId");
-
-                    b.ToTable("Assignment");
-
-                    b.HasData(
-                        new
-                        {
-                            AssignmentId = 1,
-                            CreatorId = 142095,
-                            IsCompleted = false,
-                            IsInProgress = false,
-                            Priority = 2,
-                            Title = "Clean the floors"
-                        },
-                        new
-                        {
-                            AssignmentId = 2,
-                            CreatorId = 153094,
-                            IsCompleted = false,
-                            IsInProgress = true,
-                            Priority = 3,
-                            Title = "Patch leaky roof"
-                        });
                 });
 
             modelBuilder.Entity("ShelterHelperAPI.Models.Bedding", b =>
@@ -292,11 +240,11 @@ namespace ShelterHelperAPI.Migrations
 
             modelBuilder.Entity("ShelterHelperAPI.Models.Owner", b =>
                 {
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("OwnerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("OwnerId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OwnerId"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -442,17 +390,13 @@ namespace ShelterHelperAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShelterHelperAPI.Models.Owner", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
                     b.HasOne("ShelterHelperAPI.Models.Species", "Species")
                         .WithMany()
-                        .HasForeignKey("SpeciesId");
+                        .HasForeignKey("SpeciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Employee");
-
-                    b.Navigation("Owner");
 
                     b.Navigation("Species");
                 });
