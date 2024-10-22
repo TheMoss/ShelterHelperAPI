@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using ShelterHelperAPI.Models;
 namespace ShelterHelperAPI.Controllers
 {
@@ -71,7 +70,7 @@ namespace ShelterHelperAPI.Controllers
 
 		// POST: api/animals
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost, ValidateAntiForgeryToken]
+		[HttpPost]
 		public async Task<ActionResult<Animal>> PostAnimal(Animal animal)
 		{
 			_context.AnimalsDb.Update(animal);
@@ -91,16 +90,9 @@ namespace ShelterHelperAPI.Controllers
 
             if (ModelState.IsValid)
             {
-				try { 
-                _context.AnimalsDb.Update(animal);
+	            _context.AnimalsDb.Update(animal);
             await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
-            }
+	        }
             return NoContent();
         }
 
