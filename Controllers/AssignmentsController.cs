@@ -36,10 +36,10 @@ namespace ShelterHelperAPI.Controllers
             return assignment;
         }
 
-        // PUT: api/assignments/5
+        // POST: api/assignments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAssignment(int? id, Assignment assignment)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> PostSelectedAssignment(int? id, Assignment assignment)
         {
             if (id != assignment.AssignmentId)
             {
