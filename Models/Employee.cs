@@ -8,6 +8,5 @@ namespace ShelterHelperAPI.Models
 		public int EmployeeId { get; set; }		
 		public int EmployeePersonalId{ get; set; }
 		public string EmployeeName { get; set; }
-
 	}
 }

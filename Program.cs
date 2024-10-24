@@ -7,20 +7,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy(name:"AllowSpecificOrigin", policy =>
-	{
-		policy.WithOrigins("https://localhost:7082")
-		.WithMethods("GET", "PUT", "PATCH", "OPTIONS")
-		.AllowAnyHeader();
-	});
+    options.AddPolicy(name: "AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins("https://localhost:7082")
+            .WithMethods("GET", "PUT", "PATCH", "OPTIONS")
+            .AllowAnyHeader();
+    });
 });
-builder.Services.AddControllers()	
-	.AddNewtonsoftJson();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ShelterContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("ShelterContext")));
+builder.Services.AddDbContext<ShelterContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ShelterContext")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,11 +35,10 @@ app.UseCors("AllowSpecificOrigin");
 
 using (var scope = app.Services.CreateScope())
 {
-	var services = scope.ServiceProvider;
+    var services = scope.ServiceProvider;
 
-	var context = services.GetRequiredService<ShelterContext>();	
+    var context = services.GetRequiredService<ShelterContext>();
 }
-
 
 
 app.UseHttpsRedirection();

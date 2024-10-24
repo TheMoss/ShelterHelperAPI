@@ -7,57 +7,57 @@ using ShelterHelperAPI.Models;
 
 namespace ShelterHelperAPI.Controllers
 {
-	[Route("api/owners")]
-	[ApiController]
-	public class OwnersController : ControllerBase
-	{
-		private readonly ShelterContext _context;
+    [Route("api/owners")]
+    [ApiController]
+    public class OwnersController : ControllerBase
+    {
+        private readonly ShelterContext _context;
 
-		public OwnersController(ShelterContext context)
-		{
-			_context = context;
-		}
+        public OwnersController(ShelterContext context)
+        {
+            _context = context;
+        }
 
+        // GET: api/owners
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Owner>>> GetAllOwners()
+        {
+            return await _context.Owner.ToListAsync();
+        }
 
-		// GET: api/owners
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Owner>>> GetAllOwners()
-		{
-			return await _context.Owner.ToListAsync();
-		}
+        // GET api/owners/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Owner>> GetOwnerById(int id)
+        {
+            var owner = await _context.Owner.FindAsync(id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
 
-		// GET api/owners/5
-		[HttpGet("{id}")]
-		public async Task<ActionResult<Owner>> GetOwnerById(int id)
-		{
-			var owner = await _context.Owner.FindAsync(id);
-			if (owner == null)
-			{
-				return NotFound();
-			}
-			return owner;
-		}
+            return owner;
+        }
 
-		// POST api/owners
-		[HttpPost]
-		public async Task<ActionResult<Owner>> Post(Owner owner)
-		{
-			_context.Owner.Update(owner);
-			await _context.SaveChangesAsync();
+        // POST api/owners
+        [HttpPost]
+        public async Task<ActionResult<Owner>> Post(Owner owner)
+        {
+            _context.Owner.Update(owner);
+            await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetOwnerById", new { id = owner.OwnerId }, owner);
-		}
+            return CreatedAtAction("GetOwnerById", new { id = owner.OwnerId }, owner);
+        }
 
-		// PUT api/owners/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
+        // PUT api/owners/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
 
-		// DELETE api/owners/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
-		{
-		}
-	}
+        // DELETE api/owners/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
 }

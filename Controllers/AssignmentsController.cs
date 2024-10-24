@@ -9,7 +9,7 @@ namespace ShelterHelperAPI.Controllers
     public class AssignmentsController : ControllerBase
     {
         private readonly ShelterContext _context;
-
+        
         public AssignmentsController(ShelterContext context)
         {
             _context = context;

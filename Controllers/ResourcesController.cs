@@ -8,311 +8,320 @@ using Microsoft.AspNetCore.Cors;
 
 namespace ShelterHelperAPI.Controllers
 {
+    [Route("api/resources")]
+    [ApiController]
+    public class ResourcesController : ControllerBase
+    {
+        private readonly ShelterContext _context;
+        
+        public ResourcesController(ShelterContext context)
+        {
+            _context = context;
+        }
 
-	[Route("api/resources")]
-	[ApiController]
-	public class ResourcesController : ControllerBase
-	{
-		private readonly ShelterContext _context;
+        //GET: api/resources
+        [HttpGet]
+        public async Task<ActionResult<StorageDto>> Get()
+        {
+            var attributesDto = new StorageDto();
 
-		public ResourcesController(ShelterContext context)
-		{
-			_context = context;
-		}
+            attributesDto.DietsList = await _context.Diet.ToListAsync();
+            attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
+            attributesDto.ToysList = await _context.Toy.ToListAsync();
+            attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
 
-		//GET: api/resources
-		[HttpGet]
-		public async Task<ActionResult<StorageDto>> Get()
-		{
-			var attributesDto = new StorageDto();
+            return attributesDto;
+        }
 
-			attributesDto.DietsList = await _context.Diet.ToListAsync();
-			attributesDto.BeddingsList = await _context.Bedding.ToListAsync();
-			attributesDto.ToysList = await _context.Toy.ToListAsync();
-			attributesDto.AccessoriesList = await _context.Accessory.ToListAsync();
+        #region Diets
 
-			return attributesDto;
-		}
+        //GET api/resources/diets/1
+        [HttpGet("diets/{id}")]
+        [EnableCors("AllowSpecificOrigin")]
+        public async Task<ActionResult<Diet>> GetDiet(int id)
+        {
+            var diet = await _context.Diet.FindAsync(id);
+            if (diet == null)
+            {
+                return NotFound();
+            }
 
-		#region Diets
+            return diet;
+        }
 
-		//GET api/resources/diets/1
-		[HttpGet("diets/{id}")]
-		[EnableCors("AllowSpecificOrigin")]
-		public async Task<ActionResult<Diet>> GetDiet(int id)
-		{
-			var diet = await _context.Diet.FindAsync(id);
-			if (diet == null)
-			{
-				return NotFound();
-			}
-			return diet;
-		}
+        // POST api/resources/diets
+        [HttpPost]
+        [Route("diets")]
+        public async Task<ActionResult<Diet>> PostNewDiet(Diet diet)
+        {
+            _context.Diet.Add(diet);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = diet.DietId }, diet);
+        }
 
-		// POST api/resources/diets
-		[HttpPost]
-		[Route("diets")]
+        //PATCH api/resources/diets/1
+        [HttpPatch]
+        [Route("diets/{id}")]
+        [EnableCors("AllowSpecificOrigin")]
+        public async Task<ActionResult> PatchDiet(int id, JsonPatchDocument<Diet> patch)
+        {
+            Diet diet = await _context.Diet.FindAsync(id);
+            patch.ApplyTo(diet);
+            _context.Diet.Update(diet);
+            await _context.SaveChangesAsync();
+            return Ok(diet);
+        }
 
-		public async Task<ActionResult<Diet>> PostNewDiet(Diet diet)
-		{
+        //POST : api/resources/diets/5
+        [HttpPost]
+        [Route("diets/{id}")]
+        public async Task<ActionResult<Accessory>> EditDiet(int id, Diet diet)
+        {
+            if (id != diet.DietId)
+            {
+                return NotFound();
+            }
 
-			_context.Diet.Add(diet);
-			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = diet.DietId }, diet);
-		}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Diet.Update(diet);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
 
-		//PATCH api/resources/diets/1
-		[HttpPatch]
-		[Route("diets/{id}")]
-		[EnableCors("AllowSpecificOrigin")]
-		public async Task<ActionResult> PatchDiet(int id, JsonPatchDocument<Diet> patch)
-		{
-			Diet diet = await _context.Diet.FindAsync(id);
-			patch.ApplyTo(diet);
-			_context.Diet.Update(diet);
-			await _context.SaveChangesAsync();
-			return Ok(diet);
+            return NoContent();
+        }
 
-		}
+        // DELETE: api/resources/diets/5
+        [HttpDelete("diets/{id}")]
+        public async Task<IActionResult> DeleteDiet(int id)
+        {
+            var diet = await _context.Diet.FindAsync(id);
+            if (diet == null)
+            {
+                return NotFound();
+            }
 
-		//POST : api/resources/diets/5
-		[HttpPost]
-		[Route("diets/{id}")]
-		public async Task<ActionResult<Accessory>> EditDiet(int id, Diet diet)
-		{
-			if (id != diet.DietId)
-			{
-				return NotFound();
-			}
+            _context.Diet.Remove(diet);
+            await _context.SaveChangesAsync();
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Diet.Update(diet);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					throw;
-				}
+            return NoContent();
+        }
 
-			}
-			return NoContent();
-		}
-		// DELETE: api/resources/diets/5
-		[HttpDelete("diets/{id}")]
-		public async Task<IActionResult> DeleteDiet(int id)
-		{
-			var diet = await _context.Diet.FindAsync(id);
-			if (diet == null)
-			{
-				return NotFound();
-			}
+        #endregion
 
-			_context.Diet.Remove(diet);
-			await _context.SaveChangesAsync();
+        #region Beddings
 
-			return NoContent();
-		}
-		#endregion
+        //GET api/resources/beddings/1
+        [HttpGet("beddings/{id}")]
+        public async Task<ActionResult<Bedding>> GetBedding(int id)
+        {
+            var bedding = await _context.Bedding.FindAsync(id);
+            if (bedding == null)
+            {
+                return NotFound();
+            }
 
-		#region Beddings
-		//GET api/resources/beddings/1
-		[HttpGet("beddings/{id}")]
-		public async Task<ActionResult<Bedding>> GetBedding(int id)
-		{
-			var bedding = await _context.Bedding.FindAsync(id);
-			if (bedding == null)
-			{
-				return NotFound();
-			}
-			return bedding;
-		}
-		// POST api/resources/beddings
-		[HttpPost]
-		[Route("beddings")]
-		public async Task<ActionResult<Bedding>> PostNewBedding(Bedding bedding)
-		{
-			_context.Bedding.Add(bedding);
-			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = bedding.BeddingId }, bedding);
-		}
+            return bedding;
+        }
 
-		//POST : api/resources/beddings/5
-		[HttpPost]
-		[Route("beddings/{id}")]
-		public async Task<ActionResult<Accessory>> EditBedding(int id, Bedding bedding)
-		{
-			if (id != bedding.BeddingId)
-			{
-				return NotFound();
-			}
+        // POST api/resources/beddings
+        [HttpPost]
+        [Route("beddings")]
+        public async Task<ActionResult<Bedding>> PostNewBedding(Bedding bedding)
+        {
+            _context.Bedding.Add(bedding);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = bedding.BeddingId }, bedding);
+        }
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Bedding.Update(bedding);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					throw;
-				}
+        //POST : api/resources/beddings/5
+        [HttpPost]
+        [Route("beddings/{id}")]
+        public async Task<ActionResult<Accessory>> EditBedding(int id, Bedding bedding)
+        {
+            if (id != bedding.BeddingId)
+            {
+                return NotFound();
+            }
 
-			}
-			return NoContent();
-		}
-		// DELETE: api/resources/beddings/5
-		[HttpDelete("beddings/{id}")]
-		public async Task<IActionResult> DeleteBedding(int id)
-		{
-			var bedding = await _context.Bedding.FindAsync(id);
-			if (bedding == null)
-			{
-				return NotFound();
-			}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Bedding.Update(bedding);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
 
-			_context.Bedding.Remove(bedding);
-			await _context.SaveChangesAsync();
+            return NoContent();
+        }
 
-			return NoContent();
-		}
-		#endregion
+        // DELETE: api/resources/beddings/5
+        [HttpDelete("beddings/{id}")]
+        public async Task<IActionResult> DeleteBedding(int id)
+        {
+            var bedding = await _context.Bedding.FindAsync(id);
+            if (bedding == null)
+            {
+                return NotFound();
+            }
 
-		#region Toys
-		//GET api/resources/toys/1
-		[HttpGet("toys/{id}")]
-		public async Task<ActionResult<Toy>> GetToy(int id)
-		{
-			var toy = await _context.Toy.FindAsync(id);
-			if (toy == null)
-			{
-				return NotFound();
-			}
-			return toy;
-		}
+            _context.Bedding.Remove(bedding);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        #endregion
+
+        #region Toys
+
+        //GET api/resources/toys/1
+        [HttpGet("toys/{id}")]
+        public async Task<ActionResult<Toy>> GetToy(int id)
+        {
+            var toy = await _context.Toy.FindAsync(id);
+            if (toy == null)
+            {
+                return NotFound();
+            }
+
+            return toy;
+        }
 
 
-		// POST api/resources/toys
-		[HttpPost]
-		[Route("toys")]
-		public async Task<ActionResult<Toy>> PostNewToy(Toy toy)
-		{
-			_context.Toy.Add(toy);
-			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = toy.ToyId }, toy);
-		}
+        // POST api/resources/toys
+        [HttpPost]
+        [Route("toys")]
+        public async Task<ActionResult<Toy>> PostNewToy(Toy toy)
+        {
+            _context.Toy.Add(toy);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = toy.ToyId }, toy);
+        }
 
-		//POST : api/resources/toys/5
-		[HttpPost]
-		[Route("toys/{id}")]
-		public async Task<ActionResult<Accessory>> EditToy(int id, Toy toy)
-		{
-			if (id != toy.ToyId)
-			{
-				return NotFound();
-			}
+        //POST : api/resources/toys/5
+        [HttpPost]
+        [Route("toys/{id}")]
+        public async Task<ActionResult<Accessory>> EditToy(int id, Toy toy)
+        {
+            if (id != toy.ToyId)
+            {
+                return NotFound();
+            }
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Toy.Update(toy);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					throw;
-				}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Toy.Update(toy);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
 
-			}
-			return NoContent();
-		}
+            return NoContent();
+        }
 
-		// DELETE: api/resources/toys/5
-		[HttpDelete("toys/{id}")]
-		public async Task<IActionResult> DeleteToy(int id)
-		{
-			var toy = await _context.Toy.FindAsync(id);
-			if (toy == null)
-			{
-				return NotFound();
-			}
+        // DELETE: api/resources/toys/5
+        [HttpDelete("toys/{id}")]
+        public async Task<IActionResult> DeleteToy(int id)
+        {
+            var toy = await _context.Toy.FindAsync(id);
+            if (toy == null)
+            {
+                return NotFound();
+            }
 
-			_context.Toy.Remove(toy);
-			await _context.SaveChangesAsync();
+            _context.Toy.Remove(toy);
+            await _context.SaveChangesAsync();
 
-			return NoContent();
-		}
-		#endregion
+            return NoContent();
+        }
 
-		#region Accessories
-		//GET api/resources/accessories/1
-		[HttpGet("accessories/{id}")]
-		public async Task<ActionResult<Accessory>> GetAccessory(int id)
-		{
-			var accessory = await _context.Accessory.FindAsync(id);
-			if (accessory == null)
-			{
-				return NotFound();
-			}
-			return accessory;
-		}
+        #endregion
 
-		// POST api/resources/accessories
-		[HttpPost]
-		[Route("accessories")]
-		public async Task<ActionResult<Accessory>> PostNewAccessory(Accessory accessory)
-		{
-			_context.Accessory.Add(accessory);
-			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(Get), new { id = accessory.AccessoryId }, accessory);
-		}
+        #region Accessories
 
-		//POST : api/resources/accessories/5
-		[HttpPost]
-		[Route("accessories/{id}")]
-		public async Task<ActionResult<Accessory>> EditAccessory(int id, Accessory accessory)
-		{
-			if (id != accessory.AccessoryId)
-			{
-				return NotFound();
-			}
+        //GET api/resources/accessories/1
+        [HttpGet("accessories/{id}")]
+        public async Task<ActionResult<Accessory>> GetAccessory(int id)
+        {
+            var accessory = await _context.Accessory.FindAsync(id);
+            if (accessory == null)
+            {
+                return NotFound();
+            }
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Accessory.Update(accessory);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					throw;
-				}
+            return accessory;
+        }
 
-			}
-			return NoContent();
-			
-		}
+        // POST api/resources/accessories
+        [HttpPost]
+        [Route("accessories")]
+        public async Task<ActionResult<Accessory>> PostNewAccessory(Accessory accessory)
+        {
+            _context.Accessory.Add(accessory);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = accessory.AccessoryId }, accessory);
+        }
 
-		// DELETE: api/resources/accessories/5
-		[HttpDelete("accessories/{id}")]
-		public async Task<IActionResult> DeleteAccessory(int id)
-		{
-			var accessory = await _context.Accessory.FindAsync(id);
-			if (accessory == null)
-			{
-				return NotFound();
-			}
+        //POST : api/resources/accessories/5
+        [HttpPost]
+        [Route("accessories/{id}")]
+        public async Task<ActionResult<Accessory>> EditAccessory(int id, Accessory accessory)
+        {
+            if (id != accessory.AccessoryId)
+            {
+                return NotFound();
+            }
 
-			_context.Accessory.Remove(accessory);
-			await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Accessory.Update(accessory);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
 
-			return NoContent();
-		}
-		#endregion Accessories
-	}
+            return NoContent();
+        }
+
+        // DELETE: api/resources/accessories/5
+        [HttpDelete("accessories/{id}")]
+        public async Task<IActionResult> DeleteAccessory(int id)
+        {
+            var accessory = await _context.Accessory.FindAsync(id);
+            if (accessory == null)
+            {
+                return NotFound();
+            }
+
+            _context.Accessory.Remove(accessory);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        #endregion Accessories
+    }
 }
