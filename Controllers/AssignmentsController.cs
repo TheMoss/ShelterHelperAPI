@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShelterHelperAPI.Models;
@@ -78,6 +80,23 @@ namespace ShelterHelperAPI.Controllers
             return CreatedAtAction("GetAssignment", new { id = assignment.AssignmentId }, assignment);
         }
 
+        //PATCH: api/assignments/5
+        [HttpPatch("{id}")]
+        [EnableCors("AllowSpecificOrigin")]
+        public async Task<ActionResult> PatchAssignment(int? id, JsonPatchDocument<Assignment> patch)
+        {
+            var assignment = await _context.Assignment.FindAsync(id);
+
+            if (assignment == null)
+            {
+                return NotFound();
+            }
+            
+            patch.ApplyTo(assignment);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        
         // DELETE: api/Assignments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssignment(int? id)
