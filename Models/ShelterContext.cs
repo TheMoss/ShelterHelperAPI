@@ -14,6 +14,8 @@ namespace ShelterHelperAPI.Models
         public DbSet<Owner> Owner { get; set; }
         public DbSet<Species> Species { get; set; }
         public DbSet<Toy> Toy { get; set; }
+        
+        public DbSet<EmployeesAssignments> EmployeesAssignments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -184,6 +186,16 @@ namespace ShelterHelperAPI.Models
                     CreatorId = 153094,
                     IsInProgress = true
                 });
+            
+            modelBuilder.Entity<EmployeesAssignments>().HasData(
+                new EmployeesAssignments
+                {
+                    Id = 1,
+                    EmployeeId = 1,
+                    AssignmentId = 1
+                }
+            );
+
         }
 
         public ShelterContext()
