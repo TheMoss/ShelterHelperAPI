@@ -10,6 +10,6 @@ public class EmployeesAssignments
     public int EmployeeId { get; set; }
     public int AssignmentId { get; set; }
 
-    public virtual Employee? Employee { get; set; } = null!;
-    public virtual Assignment? Assignment { get; set; } = null!;
+    public virtual Employee? Employee { get; set; }
+    public virtual Assignment? Assignment { get; set; }
 }
